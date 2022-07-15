@@ -1,6 +1,11 @@
 <script>
     export let buttonLabel = "Click me";
     export let onClick;
+    let dropdownVisible = false;
+
+    const toggleDropdown = () => {
+        dropdownVisible = !dropdownVisible;
+    };
 </script>
 
 <div class="dropdown-outer">
@@ -10,8 +15,8 @@
         </button>
     </slot>
     <div class="dropdown-menu">
-        <button class="dropdown-handle">▾</button>
-        <div class="dropdown-items">
+        <button class="dropdown-handle" on:click={toggleDropdown}>▾</button>
+        <div class="dropdown-items {dropdownVisible ? 'show' : ''}">
             <slot />
         </div>
     </div>
@@ -50,6 +55,9 @@
     }
     .dropdown-menu:hover > .dropdown-items {
         display: block;
+    }
+    .show {
+        display: block !important;
     }
     .dropdown-handle {
         background-color: var(--button-bg-color);
