@@ -21,17 +21,15 @@
     synth.addEventListener("voiceschanged", getVoices);
 </script>
 
-{#if voices.length > 0}
-    <ButtonDropdown onClick={speak} {buttonLabel}>
-        {#each voices as v, i}
-            <DropdownItem
-                onClick={() => {
-                    voice = voices[i];
-                    speak();
-                }}
-            >
-                {v.name.split("+")[1]}
-            </DropdownItem>
-        {/each}
-    </ButtonDropdown>
-{/if}
+<ButtonDropdown onClick={speak} {buttonLabel}>
+    {#each voices as v, i}
+        <DropdownItem
+            onClick={() => {
+                voice = voices[i];
+                speak();
+            }}
+        >
+            {v.name.split("+")[1]}
+        </DropdownItem>
+    {/each}
+</ButtonDropdown>
