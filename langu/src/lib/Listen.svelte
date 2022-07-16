@@ -21,24 +21,38 @@
     synth.addEventListener("voiceschanged", getVoices);
 </script>
 
-<div class="dropdown dropdown-hover listen">
-    <button tabindex="0" class="btn btn-secondary" on:click={speak}>
+{#if voices.length > 0}
+    <div class="dropdown dropdown-hover listen">
+        <button tabindex="0" class="btn btn-secondary" on:click={speak}>
+            Listen
+        </button>
+        <ul tabindex="0" class="dropdown-content menu shadow bg-base-100">
+            {#each voices as voice}
+                <li>
+                    <button
+                        class="pick-voice"
+                        on:click={() => pickVoice(voice)}
+                    >
+                        {voice.name}
+                    </button>
+                </li>
+            {/each}
+        </ul>
+    </div>
+{:else}
+    <button
+        tabindex="0"
+        class="btn btn-secondary"
+        on:click={speak}
+        title="Unable to detect SpeechSynthesisVoices, this button might not work"
+    >
         Listen
     </button>
-    <ul tabindex="0" class="dropdown-content menu shadow bg-base-100">
-        {#each voices as voice}
-            <li>
-                <button class="pick-voice" on:click={() => pickVoice(voice)}>
-                    {voice.name}
-                </button>
-            </li>
-        {/each}
-    </ul>
-</div>
+{/if}
 
 <style>
     .dropdown-content {
-        overflow: scroll;
+        overflow: auto;
         max-height: 35vh;
     }
 </style>
