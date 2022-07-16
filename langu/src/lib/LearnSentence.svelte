@@ -17,52 +17,35 @@
   onMount(getRandom);
 </script>
 
-<h2>Original sentence</h2>
-<a class="tatoeba-link" href="https://tatoeba.org/en/sentences/show/{ru_id}">
-  View on Tatoeba
-</a>
-<div class="original sentence">{ru}</div>
+<div class="original card">
+  <h2>Original sentence</h2>
+  <a
+    class="link link-accent"
+    href="https://tatoeba.org/en/sentences/show/{ru_id}"
+  >
+    View on Tatoeba
+  </a>
+  <div class="sentence">{ru}</div>
+</div>
 
 <Listen bind:whatToSay={ru} lang="ru" />
 
-<button on:click={getRandom}> Another </button>
+<button class="btn btn-primary" on:click={getRandom}> Another </button>
 
-<h2>Translations</h2>
+<div class="translated card">
+  <h2>Translations</h2>
 
-{#each en as translation}
-  <div class="sentence translation">{translation}</div>
-{/each}
+  {#each en as translation}
+    <div class="sentence">{translation}</div>
+  {/each}
+</div>
 
 <style>
   .sentence {
     padding: 0.2em;
     margin: 0.5em;
   }
-  h2 {
-    margin-bottom: 0px;
-  }
-  .tatoeba-link {
-    font-size: 0.85em;
-    text-decoration: underline;
-  }
-  .original {
+  .original .sentence {
     font-size: 1.3em;
-  }
-
-  button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: var(--button-bg-color);
-    cursor: pointer;
-    outline: 1px solid transparent;
-    transition: outline-color 0.2s;
-    margin-left: 2ch;
-  }
-  button:hover {
-    outline-color: #646cff;
   }
 </style>

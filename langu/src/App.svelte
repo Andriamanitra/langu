@@ -4,9 +4,7 @@
 
 <main>
   <h1>Langu</h1>
-  <div class="card">
-    <LearnSentence />
-  </div>
+  <LearnSentence />
 </main>
 
 <style>
