@@ -21,9 +21,9 @@
     }
   };
   let queue = [];
-  let ru = "привет";
-  let en = ["hello"];
-  let ru_id = 0;
+  let ru = "Язык открывает миры.";
+  let en = ["Language opens worlds."];
+  let ru_id = 6882113;
   onMount(getMoreSentences);
 </script>
 
