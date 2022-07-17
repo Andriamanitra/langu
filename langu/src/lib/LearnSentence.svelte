@@ -2,19 +2,29 @@
   import { onMount } from "svelte";
   import Listen from "./Listen.svelte";
 
-  const getRandom = async () => {
-    fetch("http://localhost:5000/sentence/random")
+  const MIN_QUEUE_LENGTH = 5;
+  const getMoreSentences = async () => {
+    fetch("http://localhost:5000/sentence/random?count=20")
       .then((resp) => resp.json())
       .then((data) => {
-        ru = data["ru"];
-        en = data["en"];
-        ru_id = data["ru_id"];
+        queue.push(...data);
       });
   };
+  const nextSentence = () => {
+    if (queue.length > 0) {
+      ({ ru, en, ru_id } = queue.shift());
+    } else {
+      console.warn("sentence queue is empty!");
+    }
+    if (queue.length < MIN_QUEUE_LENGTH) {
+      getMoreSentences();
+    }
+  };
+  let queue = [];
   let ru = "привет";
   let en = ["hello"];
   let ru_id = 0;
-  onMount(getRandom);
+  onMount(getMoreSentences);
 </script>
 
 <div class="original card">
@@ -34,7 +44,7 @@
 
 <div class="buttons">
   <Listen bind:whatToSay={ru} lang="ru" />
-  <button class="btn btn-primary" on:click={getRandom}> Another </button>
+  <button class="btn btn-primary" on:click={nextSentence}> Another </button>
 </div>
 <div class="translated card">
   <h2>Translations</h2>
