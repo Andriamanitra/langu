@@ -2,14 +2,19 @@
     export let darkModeEnabled;
 </script>
 
-<label class="swap swap-rotate">
+<label class="swap swap-rotate" title="Toggle dark mode">
     <!-- this hidden checkbox controls the state -->
-    <input type="checkbox" bind:checked={darkModeEnabled} />
+    <input
+        type="checkbox"
+        bind:checked={darkModeEnabled}
+        class={$$props.class}
+    />
 
     <!-- sun icon -->
     <svg
-        class={`swap-off fill-current ${$$props.class}`}
+        class="swap-off fill-current {$$props.class}"
         xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
         viewBox="0 0 24 24"
     >
         <path
@@ -19,8 +24,9 @@
 
     <!-- moon icon -->
     <svg
-        class={`swap-on fill-current ${$$props.class}`}
+        class="swap-on fill-current {$$props.class}"
         xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
         viewBox="0 0 24 24"
     >
         <path
@@ -28,3 +34,9 @@
         />
     </svg>
 </label>
+
+<style>
+    input[type="checkbox"]:focus {
+        border-radius: var(--rounded-btn, 0.5rem);
+    }
+</style>

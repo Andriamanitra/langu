@@ -2,7 +2,12 @@
     export let repo = "";
 </script>
 
-<a class="link link-hover" href="https://github.com/{repo}">
+<a
+    class="link link-hover"
+    href="https://github.com/{repo}"
+    title="Github"
+    aria-label="Project page on Github"
+>
     <svg
         class={`fill-current ${$$props.class}`}
         viewBox="0 0 100 100"
