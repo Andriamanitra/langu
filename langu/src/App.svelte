@@ -19,19 +19,17 @@
 
 <main>
   <div class="navbar p-0">
-    <div class="flex-1 page-title">
-      <h1 class="flex-1">Langu</h1>
+    <div class="flex-1">
+      <h1 id="page-title" class="flex-1">Langu</h1>
     </div>
-    <div class="flex-none">
-      <ul class="menu menu-horizontal">
-        <li>
-          <GithubLink class="w-8 h-8" repo="andriamanitra/langu" />
-        </li>
-        <li>
-          <DarkModeToggle bind:darkModeEnabled={darkMode} class="w-8 h-8" />
-        </li>
-      </ul>
-    </div>
+    <ul id="link-menu" class="flex-none menu menu-horizontal">
+      <li id="gh-link">
+        <GithubLink class="w-8 h-8" repo="andriamanitra/langu" />
+      </li>
+      <li id="dark-mode-btn">
+        <DarkModeToggle class="w-8 h-8" bind:darkModeEnabled={darkMode} />
+      </li>
+    </ul>
   </div>
   <div class="divider" />
   <LearnSentence />
