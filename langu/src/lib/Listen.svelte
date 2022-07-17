@@ -1,12 +1,19 @@
 <script>
+    import ErrorToast from "./ErrorToast.svelte";
+
     export let lang;
     export let whatToSay;
     let voices;
     let voice = null;
+    let errorHidden = true;
 
     const synth = window.speechSynthesis;
     const speak = () => {
         let utterance = new SpeechSynthesisUtterance(whatToSay);
+        utterance.onerror = (ev) => {
+            console.error(ev);
+            errorHidden = false;
+        };
         utterance.lang = lang;
         if (voice !== null) {
             utterance.voice = voice;
@@ -51,6 +58,23 @@
 <button tabindex="0" class="listen btn btn-secondary" on:click={speak}>
     Listen
 </button>
+
+<ErrorToast bind:hidden={errorHidden}>
+    Speech synthesis failed.
+    <div slot="long-description">
+        <span>
+            Speech synthesis feature uses
+            <a
+                class="link link-primary"
+                href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis"
+            >
+                SpeechSynthesis API
+            </a> provided by your web browser. You may want to try a different one.
+            Firefox is known to work well on most Linux distributions. Google Chrome
+            has been reported to work on Windows.
+        </span>
+    </div>
+</ErrorToast>
 
 <style>
     .dropdown-hover:hover .dropdown-button {
