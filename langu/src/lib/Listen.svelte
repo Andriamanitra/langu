@@ -2,12 +2,15 @@
     export let lang;
     export let whatToSay;
     let voices;
-    let voice;
+    let voice = null;
 
     const synth = window.speechSynthesis;
     const speak = () => {
         let utterance = new SpeechSynthesisUtterance(whatToSay);
-        utterance.voice = voice;
+        utterance.lang = lang;
+        if (voice !== null) {
+            utterance.voice = voice;
+        }
         synth.speak(utterance);
     };
     const getVoices = () => {
@@ -21,12 +24,17 @@
     synth.addEventListener("voiceschanged", getVoices);
 </script>
 
-{#if voices.length > 0}
-    <div class="dropdown dropdown-hover listen">
-        <button tabindex="0" class="btn btn-secondary" on:click={speak}>
-            Listen
-        </button>
+{#if voices.length > 1}
+    <div class="dropdown dropdown-hover voice-picker">
+        <button tabindex="0" class="btn btn-secondary dropdown-button"
+            >{voice?.name ?? "Default"}</button
+        >
         <ul tabindex="0" class="dropdown-content menu shadow bg-base-100">
+            <li>
+                <button class="pick-voice" on:click={() => pickVoice(null)}>
+                    Default
+                </button>
+            </li>
             {#each voices as voice}
                 <li>
                     <button
@@ -39,20 +47,39 @@
             {/each}
         </ul>
     </div>
-{:else}
-    <button
-        tabindex="0"
-        class="btn btn-secondary"
-        on:click={speak}
-        title="Unable to detect SpeechSynthesisVoices, this button might not work"
-    >
-        Listen
-    </button>
 {/if}
+<button tabindex="0" class="listen btn btn-secondary" on:click={speak}>
+    Listen
+</button>
 
 <style>
+    .dropdown-hover:hover .dropdown-button {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+    .dropdown-button {
+        box-shadow: none;
+        white-space: nowrap;
+        overflow: hidden;
+        display: block;
+        text-overflow: "";
+    }
     .dropdown-content {
         overflow: auto;
+        width: 100%;
         max-height: 35vh;
+        border-bottom-left-radius: var(--rounded-btn, 0.5rem);
+        border-bottom-right-radius: var(--rounded-btn, 0.5rem);
+    }
+    .voice-picker::before {
+        content: "VOICE";
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        line-height: 100%;
+        top: 2px;
+        left: 0px;
+        font-size: 0.6em;
+        font-weight: 800;
     }
 </style>
