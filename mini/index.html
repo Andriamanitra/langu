@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			flex-direction: column;
+			margin: 0 auto;
+			text-align: center;
+			max-width: 50em;
+		}
+
+		button {
+			padding: 0.5em 2em;
+		}
+
+		h2 {
+			margin: 0;
+		}
+
+		.original .sentence {
+			font-size: 1.5em;
+		}
+
+		.sentence {
+			padding: 1em;
+		}
+
+		.card {
+			display: flex;
+			flex-direction: column;
+			padding: 1em;
+			margin: 1.5em;
+		}
+
+		#buttons {
+			display: flex;
+			justify-content: space-evenly;
+			flex-wrap: wrap;
+			gap: 0.5em;
+		}
+	</style>
+	<title>Langu</title>
+</head>
+
+<body>
+	<div class="original card">
+		<div>
+			<h2>Original sentence</h2>
+		</div>
+		<div>
+			<a id="tatoeba-link" href="https://tatoeba.org/en/sentences/show/6882113">View on Tatoeba</a>
+		</div>
+		<div id="original-sentence" class="sentence"></div>
+	</div>
+
+	<div id="buttons">
+		<select id="voice-select" hidden>
+			<option value="default">default</option>
+		</select>
+		<button id="listen-button">Listen</button>
+		<button id="next-sentence-button">Another</button>
+	</div>
+
+	<div class="translated card">
+		<h2>Translations</h2>
+		<div id="translations"></div>
+	</div>
+	<script>
+		const MIN_QUEUE_LENGTH = 5;
+		const LANG = "ru";
+		const synth = window.speechSynthesis;
+		const getMoreSentences = async () => {
+			return fetch("https://localhost:5000/sentence/random?count=20")
+				.then((resp) => resp.json())
+				.then((data) => {
+					queue.push(...data);
+				});
+		};
+		const nextSentence = () => {
+			if (queue.length > 0) {
+				({ ru, en, ru_id } = queue.shift());
+			} else {
+				console.warn("sentence queue is empty!");
+			}
+			if (queue.length < MIN_QUEUE_LENGTH) {
+				getMoreSentences();
+			}
+			render()
+		};
+		const render = () => {
+			document.getElementById("tatoeba-link").href = `https://tatoeba.org/en/sentences/show/${ru_id}`
+			document.getElementById("original-sentence").innerText = ru;
+			translations = document.getElementById("translations");
+			translations.innerHTML = "";
+			en.forEach(tr => {
+				let el = document.createElement("div");
+				el.classList.add("sentence");
+				el.innerText = tr;
+				translations.appendChild(el);
+			})
+		}
+		const speak = () => {
+			let utterance = new SpeechSynthesisUtterance(ru);
+			utterance.onerror = console.error;
+			utterance.lang = LANG;
+			let voice = document.getElementById("voice-select").selectedOptions[0]._value;
+			if (voice !== null) {
+				utterance.voice = voice;
+			}
+			synth.speak(utterance);
+		}
+		const getVoices = () => {
+			const buttons = document.getElementById("buttons");
+			let voices = synth.getVoices().filter(v => v.lang === LANG)
+			if (voices.length > 0) {
+				voiceSelect = document.getElementById("voice-select")
+				voices.forEach(v => {
+					let opt = document.createElement("option")
+					opt._value = v
+					opt.innerText = v.name
+					voiceSelect.appendChild(opt)
+				})
+				voiceSelect.hidden = false;
+			}
+		};
+		let queue = [];
+		let ru = "Язык открывает миры."
+		let en = ["Language opens worlds."];
+		let ru_id = 6882113;
+		render();
+		getVoices();
+		getMoreSentences();
+		document.getElementById("listen-button").addEventListener("click", speak)
+		document.getElementById("next-sentence-button").addEventListener("click", nextSentence)
+	</script>
+</body>
+
+</html>
