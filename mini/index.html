@@ -69,71 +69,75 @@
 		<h2>Translations</h2>
 		<div id="translations"></div>
 	</div>
+
 	<script>
-		const MIN_QUEUE_LENGTH = 5;
-		const LANG = "ru";
-		const synth = window.speechSynthesis;
+		const MIN_QUEUE_LENGTH = 5
+		const LANG = "ru"
+		const synth = window.speechSynthesis
+		const voiceSelect = document.getElementById("voice-select")
 		const getMoreSentences = async () => {
-			return fetch("https://localhost:5000/sentence/random?count=20")
+			return fetch("http://localhost:5000/sentence/random?count=20")
 				.then((resp) => resp.json())
 				.then((data) => {
-					queue.push(...data);
-				});
-		};
+					queue.push(...data)
+				})
+		}
 		const nextSentence = () => {
 			if (queue.length > 0) {
-				({ ru, en, ru_id } = queue.shift());
+				({ ru, en, ru_id } = queue.shift())
 			} else {
-				console.warn("sentence queue is empty!");
+				console.warn("sentence queue is empty!")
 			}
 			if (queue.length < MIN_QUEUE_LENGTH) {
-				getMoreSentences();
+				getMoreSentences()
 			}
 			render()
-		};
+		}
 		const render = () => {
 			document.getElementById("tatoeba-link").href = `https://tatoeba.org/en/sentences/show/${ru_id}`
-			document.getElementById("original-sentence").innerText = ru;
-			translations = document.getElementById("translations");
-			translations.innerHTML = "";
+			document.getElementById("original-sentence").innerText = ru
+			translations = document.getElementById("translations")
+			translations.innerHTML = ""
 			en.forEach(tr => {
-				let el = document.createElement("div");
-				el.classList.add("sentence");
-				el.innerText = tr;
-				translations.appendChild(el);
+				let el = document.createElement("div")
+				el.classList.add("sentence")
+				el.innerText = tr
+				translations.appendChild(el)
 			})
 		}
 		const speak = () => {
-			let utterance = new SpeechSynthesisUtterance(ru);
-			utterance.onerror = console.error;
-			utterance.lang = LANG;
-			let voice = document.getElementById("voice-select").selectedOptions[0]._value;
+			let utterance = new SpeechSynthesisUtterance(ru)
+			utterance.onerror = console.error
+			utterance.lang = LANG
+			let voice = voiceSelect.selectedOptions[0]._value
 			if (voice !== null) {
-				utterance.voice = voice;
+				utterance.voice = voice
 			}
-			synth.speak(utterance);
+			synth.speak(utterance)
 		}
 		const getVoices = () => {
-			const buttons = document.getElementById("buttons");
-			let voices = synth.getVoices().filter(v => v.lang === LANG)
+			let voices = synth.getVoices().filter(v => v.lang === LANG).sort((a, b) => a.name.localeCompare(b.name))
+			while (voiceSelect.lastChild.value !== "default") {
+				voiceSelect.removeChild(voiceSelect.lastChild)
+			}
 			if (voices.length > 0) {
-				voiceSelect = document.getElementById("voice-select")
 				voices.forEach(v => {
 					let opt = document.createElement("option")
 					opt._value = v
 					opt.innerText = v.name
 					voiceSelect.appendChild(opt)
 				})
-				voiceSelect.hidden = false;
+				voiceSelect.hidden = false
 			}
-		};
-		let queue = [];
+		}
+		let queue = []
+		let ru_id = 6882113
 		let ru = "Язык открывает миры."
-		let en = ["Language opens worlds."];
-		let ru_id = 6882113;
-		render();
-		getVoices();
-		getMoreSentences();
+		let en = ["Language opens worlds."]
+		render()
+		getVoices()
+		getMoreSentences()
+		synth.onvoiceschanged = getVoices
 		document.getElementById("listen-button").addEventListener("click", speak)
 		document.getElementById("next-sentence-button").addEventListener("click", nextSentence)
 	</script>
