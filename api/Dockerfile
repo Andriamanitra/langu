@@ -9,6 +9,6 @@ ENV SCRIPT_NAME=/langu/api
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY sentences.db *.py .
+COPY sentences.db *.py /app/
 
 CMD gunicorn sentences_api:app --bind 0.0.0.0:8000
